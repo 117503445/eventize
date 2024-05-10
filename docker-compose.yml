@@ -1,0 +1,35 @@
+services:
+  eventize-dev:
+    build:
+      context: ./src/eventize
+      dockerfile: Dockerfile.dev
+    volumes:
+      - './src/eventize:/workspace'
+      - eventize-dev-vsc:/root/.vscode-server
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ["CMD", "test", "!", "-f", "/entrypoint.py.lock"]
+      interval: 3s
+      timeout: 1s
+      retries: 5
+      start_period: 240s
+  fe-dev:
+    build:
+      context: ./src/fe
+      dockerfile: Dockerfile.dev
+    volumes:
+      - './src/fe:/workspace'
+      - fe-dev-vsc:/root/.vscode-server
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ["CMD", "test", "!", "-f", "/entrypoint.py.lock"]
+      interval: 3s
+      timeout: 1s
+      retries: 5
+      start_period: 240s
+
+volumes:
+  eventize-dev-vsc:
+  fe-dev-vsc:
