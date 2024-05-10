@@ -1,8 +1,10 @@
 package cmd
 
 import (
-	"fmt"
+	"context"
 
+	"github.com/117503445/eventize/src/eventize/internal/client"
+	"github.com/117503445/eventize/src/eventize/internal/pb"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +19,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("client called")
+		client := client.NewClient("localhost:8080")
+
+		resp, err := client.SayHello(context.Background(), &pb.HelloRequest{})
+		if err != nil {
+			panic(err)
+		}
+		println(resp.GetMessage())
 	},
 }
 
