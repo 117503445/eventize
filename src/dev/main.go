@@ -9,10 +9,8 @@ func main() {
 	goutils.InitZeroLog()
 
 	log.Debug().Msg("debug")
-	_, err := goutils.Exec("docker build -t 117503445/eventize-dev .")
-	if err != nil {
-		log.Fatal().Err(err).Msg("docker build failed")
-	}
+	goutils.Exec("docker build -t 117503445/eventize-dev .")
 
-	
+	goutils.Exec("docker run --rm -v /root/workspace/eventize:/workspace --entrypoint /workspace/src/dev/build_proto.sh 117503445/eventize-dev")
+
 }
