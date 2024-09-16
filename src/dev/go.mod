@@ -1,4 +1,4 @@
-module github.com/117503445/eventize/src/be
+module github.com/117503445/eventize/src/dev
 
 go 1.23.1
 
