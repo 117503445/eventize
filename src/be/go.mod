@@ -4,8 +4,10 @@ go 1.23.1
 
 require (
 	github.com/117503445/goutils v0.0.0-20240916184856-c7a771d51836
+	github.com/coder/websocket v1.8.12
 	github.com/rs/zerolog v1.33.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
+	golang.org/x/time v0.6.0
 	google.golang.org/protobuf v1.34.2
 )
 
