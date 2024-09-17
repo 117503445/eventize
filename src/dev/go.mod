@@ -3,7 +3,7 @@ module github.com/117503445/eventize/src/dev
 go 1.23.1
 
 require (
-	github.com/117503445/goutils v0.0.0-20240915145009-0291300c1ffd
+	github.com/117503445/goutils v0.0.0-20240917165952-394e51d77fa3
 	github.com/rs/zerolog v1.33.0
 )
 
