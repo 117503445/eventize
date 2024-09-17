@@ -16,7 +16,7 @@ func main() {
 
 	client := rpc.NewHaberdasherProtobufClient("http://localhost:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
 
-	hat, err := client.MakeHat(context.Background(), &rpc.Size{Inches: -12})
+	hat, err := client.MakeHat(context.Background(), &rpc.Size{Inches: 12})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to make hat")
 	}

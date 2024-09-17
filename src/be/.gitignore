@@ -1,3 +1,4 @@
 eventize
 *.pb.go
 *.twirp.go
+dist
