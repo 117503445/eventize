@@ -23,7 +23,7 @@ import (
 	"github.com/coder/websocket"
 )
 
-//go:embed dist/*
+//go:embed all:dist
 var staticFiles embed.FS
 
 func main() {
@@ -32,10 +32,6 @@ func main() {
 
 	rpcServer := &server.Server{} // implements Haberdasher interface
 	twirpHandler := rpc.NewHaberdasherServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
-
-	// if err := http.ListenAndServe(":9090", twirpHandler); err != nil {
-	// 	panic(err)
-	// }
 
 	log.Debug().Str("prefix", twirpHandler.PathPrefix()).Msg("twirp handler path prefix")
 
@@ -47,39 +43,17 @@ func main() {
 		log.Debug().Str("name", r.Name()).Msg("static file")
 	}
 
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ws", echoServer{
 		logf: log.Printf,
 	}.ServeHTTP)
 	mux.HandleFunc(twirpHandler.PathPrefix(), twirpHandler.ServeHTTP)
 
-	// feHandler := http.FileServer(http.FS(staticFiles))
-	assetsFs, err := fs.Sub(staticFiles, "assets")
+	feFs, err := fs.Sub(staticFiles, "dist")
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create assets fs")
 	}
-	// mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
-	mux.HandleFunc("/assets/", func(w http.ResponseWriter, r *http.Request) {
-		log.Debug().Str("path", r.URL.Path).Msg("serving static file")
-		
-
-		h := http.FileServer(http.FS(assetsFs))
-		h = http.StripPrefix("/assets/", h)
-
-		// h.ServeHTTP(w, r)
-		http.FileServer(http.FS(staticFiles)).ServeHTTP(w, r)
-	})
-	// 提供首页
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		data, err := staticFiles.ReadFile("dist/index.html")
-		if err != nil {
-			http.Error(w, "File not found", http.StatusNotFound)
-			return
-		}
-		w.Header().Set("Content-Type", "text/html")
-		w.Write(data)
-	})
+	mux.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(feFs))))
 
 	muxServer := &http.Server{
 		Addr:    ":9090",
