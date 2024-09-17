@@ -7,13 +7,14 @@ import (
 	"github.com/117503445/eventize/src/be/internal/rpc"
 	"github.com/117503445/goutils"
 	"github.com/rs/zerolog/log"
+	"github.com/twitchtv/twirp"
 )
 
 func main() {
 	goutils.InitZeroLog()
 	log.Debug().Msg("Hello, World!")
 
-	client := rpc.NewHaberdasherProtobufClient("http://localhost:9090", &http.Client{})
+	client := rpc.NewHaberdasherProtobufClient("http://localhost:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
 
 	hat, err := client.MakeHat(context.Background(), &rpc.Size{Inches: -12})
 	if err != nil {

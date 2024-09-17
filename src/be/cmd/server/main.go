@@ -9,6 +9,7 @@ import (
 	"github.com/117503445/eventize/src/be/internal/server"
 	"github.com/117503445/goutils"
 	"github.com/rs/zerolog/log"
+	"github.com/twitchtv/twirp"
 
 	"context"
 	"fmt"
@@ -24,17 +25,19 @@ func main() {
 	log.Debug().Msg("Hello, World!")
 
 	rpcServer := &server.Server{} // implements Haberdasher interface
-	twirpHandler := rpc.NewHaberdasherServer(rpcServer)
+	twirpHandler := rpc.NewHaberdasherServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
 
 	// if err := http.ListenAndServe(":9090", twirpHandler); err != nil {
 	// 	panic(err)
 	// }
 
+	log.Debug().Str("prefix", twirpHandler.PathPrefix()).Msg("twirp handler path prefix")
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ws", echoServer{
 		logf: log.Printf,
 	}.ServeHTTP)
-	mux.HandleFunc("/", twirpHandler.ServeHTTP)
+	mux.HandleFunc(twirpHandler.PathPrefix(), twirpHandler.ServeHTTP)
 
 	muxServer := &http.Server{
 		Addr:    ":9090",
