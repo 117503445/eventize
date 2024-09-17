@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net"
+	// "net"
 	"net/http"
 	"time"
 
@@ -38,18 +38,30 @@ func main() {
 		WriteTimeout: time.Second * 60,
 	}
 
-	l, err := net.Listen("tcp", ":9090")
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to listen")
-	}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		s.Handler.ServeHTTP(w, r)
+	})
 
-	err = s.Serve(l)
-	if err != nil {
+	muxServer := &http.Server{
+		Addr:         ":9090",
+		Handler:      mux,
+	}
+	if err := muxServer.ListenAndServe(); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve")
 	}
+	// l, err := net.Listen("tcp", ":9090")
+	// if err != nil {
+	// 	log.Fatal().Err(err).Msg("failed to listen")
+	// }
+
+
+	// err = s.Serve(l)
+	// if err != nil {
+	// 	log.Fatal().Err(err).Msg("failed to serve")
+	// }
 
 }
-
 
 // echoServer is the WebSocket echo server implementation.
 // It ensures the client speaks the echo subprotocol and
