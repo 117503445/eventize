@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	// "github.com/117503445/eventize/src/be/internal/rpc"
-	// "github.com/117503445/eventize/src/be/internal/server"
+	"github.com/117503445/eventize/src/be/internal/rpc"
+	"github.com/117503445/eventize/src/be/internal/server"
 	"github.com/117503445/goutils"
 	"github.com/rs/zerolog/log"
 
@@ -23,29 +23,22 @@ func main() {
 	goutils.InitZeroLog()
 	log.Debug().Msg("Hello, World!")
 
-	// server := &server.Server{} // implements Haberdasher interface
-	// twirpHandler := rpc.NewHaberdasherServer(server)
+	rpcServer := &server.Server{} // implements Haberdasher interface
+	twirpHandler := rpc.NewHaberdasherServer(rpcServer)
 
 	// if err := http.ListenAndServe(":9090", twirpHandler); err != nil {
 	// 	panic(err)
 	// }
 
-	s := &http.Server{
-		Handler: echoServer{
-			logf: log.Printf,
-		},
-		ReadTimeout:  time.Second * 60,
-		WriteTimeout: time.Second * 60,
-	}
-
 	mux := http.NewServeMux()
-	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		s.Handler.ServeHTTP(w, r)
-	})
+	mux.HandleFunc("/ws", echoServer{
+		logf: log.Printf,
+	}.ServeHTTP)
+	mux.HandleFunc("/", twirpHandler.ServeHTTP)
 
 	muxServer := &http.Server{
-		Addr:         ":9090",
-		Handler:      mux,
+		Addr:    ":9090",
+		Handler: mux,
 	}
 	if err := muxServer.ListenAndServe(); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve")
@@ -54,7 +47,6 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal().Err(err).Msg("failed to listen")
 	// }
-
 
 	// err = s.Serve(l)
 	// if err != nil {
