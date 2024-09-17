@@ -2,3 +2,6 @@ docker build -t registry.cn-hangzhou.aliyuncs.com/117503445-mirror/eventize ./sr
 docker push registry.cn-hangzhou.aliyuncs.com/117503445-mirror/eventize
 
 code --install-extension zxh404.vscode-proto3
+
+
+cd src/common
