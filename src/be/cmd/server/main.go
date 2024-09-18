@@ -55,9 +55,26 @@ func main() {
 	}
 	mux.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(feFs))))
 
+	// CORS 中间件
+	enableCORS := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+			// 如果是预检请求，直接返回
+			if r.Method == http.MethodOptions {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+
 	muxServer := &http.Server{
 		Addr:    ":9090",
-		Handler: mux,
+		Handler: enableCORS(mux),
 	}
 	if err := muxServer.ListenAndServe(); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve")

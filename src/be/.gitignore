@@ -2,3 +2,8 @@ eventize
 *.pb.go
 *.twirp.go
 dist
+
+agent
+!cmd/agent
+server
+!cmd/server
