@@ -19,12 +19,11 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-
 func TestGetServerMeta(t *testing.T) {
 	var err error
 	ast := assert.New(t)
 	client := rpc.NewEventizeProtobufClient("http://localhost:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
-	meta, err := client.GetServerMeta(context.Background(), &emptypb.Empty{})
+	meta, err := client.GetBuildInfo(context.Background(), &emptypb.Empty{})
 	ast.Nil(err)
 
 	ast.Equal("v1.0.0", meta.Version)

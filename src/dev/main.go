@@ -35,9 +35,6 @@ func main() {
 	// - `--stats`：在传输结束后显示传输统计信息。
 	goutils.Exec(fmt.Sprintf("rsync -av --delete --progress --stats %v/ %v/", "./src/fe/dist", "./src/be/cmd/server/dist"))
 
-	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/server")
-	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/agent")
-
 	// 最新 commit
 	r, _ := goutils.Exec("git rev-parse HEAD")
 	commit := strings.TrimSuffix(r.Stdout, "\n")
@@ -52,11 +49,39 @@ func main() {
 	}
 	tag := tags[0]
 	log.Debug().Str("tag", tag).Msg("tag")
-
 	// 是否有未提交的修改
+	dirty := false
 	r, _ = goutils.Exec("git status --porcelain")
 	if r.Stdout != "" {
-		log.Fatal().Msg("uncommitted changes")
+		dirty = true
 	}
+	log.Debug().Bool("dirty", dirty).Msg("dirty")
+
+	version := ""
+	if tag != "" {
+		version = tag
+	} else {
+		version = commit
+	}
+
+	if dirty {
+		version = version + "-dirty"
+	}
+
+	log.Debug().Str("version", version).Msg("version")
+
+	buildInfo := map[string]interface{}{
+		"commit":  commit,
+		"tag":     tag,
+		"dirty":   dirty,
+		"version": version,
+	}
+
+	if err = goutils.WriteJSON(rootDir+"/src/be/build_info.json", buildInfo); err != nil {
+		log.Fatal().Err(err).Msg("failed to write build_info.json")
+	}
+
+	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/server")
+	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/agent")
 
 }

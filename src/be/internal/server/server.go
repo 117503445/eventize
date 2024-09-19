@@ -23,8 +23,8 @@ func (s *Server) MakeHat(ctx context.Context, size *rpc.Size) (hat *rpc.Hat, err
 	}, nil
 }
 
-func (s *Server) GetServerMeta(context.Context, *emptypb.Empty) (meta *rpc.ServerMeta, err error) {
-	return &rpc.ServerMeta{
+func (s *Server) GetBuildInfo(context.Context, *emptypb.Empty) (meta *rpc.BuildInfo, err error) {
+	return &rpc.BuildInfo{
 		Version: "v1.0.0",
 	}, nil
 }

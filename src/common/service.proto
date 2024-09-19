@@ -11,7 +11,7 @@ service Eventize {
   // MakeHat produces a hat of mysterious, randomly-selected color!
   rpc MakeHat(Size) returns (Hat);
 
-  rpc GetServerMeta(google.protobuf.Empty) returns (ServerMeta);
+  rpc GetBuildInfo(google.protobuf.Empty) returns (BuildInfo);
 }
 
 // Size of a Hat, in inches.
@@ -26,7 +26,7 @@ message Hat {
   string name = 3; // i.e. "bowler"
 }
 
-message ServerMeta {
+message BuildInfo {
   map<string, string> meta = 1;
   string version = 2;
 }
