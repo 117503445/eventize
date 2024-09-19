@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/117503445/goutils"
 	"github.com/rs/zerolog/log"
@@ -37,5 +38,25 @@ func main() {
 	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/server")
 	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/agent")
 
+	// 最新 commit
+	r, _ := goutils.Exec("git rev-parse HEAD")
+	commit := strings.TrimSuffix(r.Stdout, "\n")
+	log.Debug().Str("commit", commit).Msg("commit")
+
+	// 此 commit 对应的 tag
+	r, _ = goutils.Exec("git tag --points-at HEAD")
+	tagOutput := strings.TrimSuffix(r.Stdout, "\n")
+	tags := strings.Split(tagOutput, "\n")
+	if len(tags) > 1 {
+		log.Warn().Str("tags", tagOutput).Msg("more than one tag")
+	}
+	tag := tags[0]
+	log.Debug().Str("tag", tag).Msg("tag")
+
+	// 是否有未提交的修改
+	r, _ = goutils.Exec("git status --porcelain")
+	if r.Stdout != "" {
+		log.Fatal().Msg("uncommitted changes")
+	}
 
 }
