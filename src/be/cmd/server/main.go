@@ -31,7 +31,7 @@ func main() {
 	log.Debug().Msg("Hello, World!")
 
 	rpcServer := &server.Server{} // implements Haberdasher interface
-	twirpHandler := rpc.NewHaberdasherServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
+	twirpHandler := rpc.NewEventizeServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
 
 	log.Debug().Str("prefix", twirpHandler.PathPrefix()).Msg("twirp handler path prefix")
 

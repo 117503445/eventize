@@ -3,10 +3,15 @@ syntax = "proto3";
 package eventize;
 option go_package = "src/be/internal/rpc";
 
+// 导入 Empty 消息类型
+import "google/protobuf/empty.proto";
+
 // Haberdasher service makes hats for clients.
-service Haberdasher {
+service Eventize {
   // MakeHat produces a hat of mysterious, randomly-selected color!
   rpc MakeHat(Size) returns (Hat);
+
+  rpc GetServerMeta(google.protobuf.Empty) returns (ServerMeta);
 }
 
 // Size of a Hat, in inches.
@@ -19,4 +24,9 @@ message Hat {
   int32 inches = 1;
   string color = 2; // anything but "invisible"
   string name = 3; // i.e. "bowler"
+}
+
+message ServerMeta {
+  map<string, string> meta = 1;
+  string version = 2;
 }

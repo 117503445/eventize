@@ -14,7 +14,7 @@ func main() {
 	goutils.InitZeroLog()
 	log.Debug().Msg("Hello, World!")
 
-	client := rpc.NewHaberdasherProtobufClient("http://localhost:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
+	client := rpc.NewEventizeProtobufClient("http://localhost:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
 
 	hat, err := client.MakeHat(context.Background(), &rpc.Size{Inches: 12})
 	if err != nil {

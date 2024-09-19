@@ -6,6 +6,7 @@ import (
 
 	"github.com/117503445/eventize/src/be/internal/rpc"
 	"github.com/twitchtv/twirp"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // Server implements the Haberdasher service
@@ -19,5 +20,11 @@ func (s *Server) MakeHat(ctx context.Context, size *rpc.Size) (hat *rpc.Hat, err
 		Inches: size.Inches,
 		Color:  []string{"white", "black", "brown", "red", "blue"}[rand.Intn(5)],
 		Name:   []string{"bowler", "baseball cap", "top hat", "derby"}[rand.Intn(4)],
+	}, nil
+}
+
+func (s *Server) GetServerMeta(context.Context, *emptypb.Empty) (meta *rpc.ServerMeta, err error) {
+	return &rpc.ServerMeta{
+		Version: "v1.0.0",
 	}, nil
 }
