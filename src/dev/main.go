@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/117503445/goutils"
 	"github.com/rs/zerolog/log"
@@ -75,9 +76,10 @@ func main() {
 		"tag":     tag,
 		"dirty":   dirty,
 		"version": version,
+		"date":    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
-	if err = goutils.WriteJSON(rootDir+"/src/be/build_info.json", buildInfo); err != nil {
+	if err = goutils.WriteJSON(rootDir+"/src/be/internal/common/build_info.json", buildInfo); err != nil {
 		log.Fatal().Err(err).Msg("failed to write build_info.json")
 	}
 

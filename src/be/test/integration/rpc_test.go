@@ -26,5 +26,5 @@ func TestGetServerMeta(t *testing.T) {
 	meta, err := client.GetBuildInfo(context.Background(), &emptypb.Empty{})
 	ast.Nil(err)
 
-	ast.Equal("v1.0.0", meta.Version)
+	ast.NotEmpty(meta.Version)
 }

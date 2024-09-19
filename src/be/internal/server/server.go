@@ -4,6 +4,7 @@ import (
 	"context"
 	"math/rand"
 
+	"github.com/117503445/eventize/src/be/internal/common"
 	"github.com/117503445/eventize/src/be/internal/rpc"
 	"github.com/twitchtv/twirp"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -25,6 +26,6 @@ func (s *Server) MakeHat(ctx context.Context, size *rpc.Size) (hat *rpc.Hat, err
 
 func (s *Server) GetBuildInfo(context.Context, *emptypb.Empty) (meta *rpc.BuildInfo, err error) {
 	return &rpc.BuildInfo{
-		Version: "v1.0.0",
+		Version: common.GetBuildInfo().Version,
 	}, nil
 }

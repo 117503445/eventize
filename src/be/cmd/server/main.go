@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/117503445/eventize/src/be/internal/common"
 	"github.com/117503445/eventize/src/be/internal/rpc"
 	"github.com/117503445/eventize/src/be/internal/server"
 	"github.com/117503445/goutils"
@@ -28,7 +29,7 @@ var staticFiles embed.FS
 
 func main() {
 	goutils.InitZeroLog()
-	log.Debug().Msg("Hello, World!")
+	log.Debug().Interface("buildInfo", common.GetBuildInfo()).Msg("Eventize server")
 
 	rpcServer := &server.Server{} // implements Haberdasher interface
 	twirpHandler := rpc.NewEventizeServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
