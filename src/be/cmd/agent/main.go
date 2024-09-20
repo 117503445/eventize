@@ -21,4 +21,12 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to make hat")
 	}
 	log.Info().Msgf("I have a nice new hat: %+v", hat)
+
+	resp, err := client.CreateEvent(context.Background(), &rpc.CreateEventRequest{
+		Type: "test",
+	})
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create event")
+	}
+	log.Info().Msgf("Event created: %+v", resp)
 }
