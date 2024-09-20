@@ -4,6 +4,7 @@ import (
 	// "net"
 	"io/fs"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/117503445/eventize/src/be/internal/common"
@@ -22,6 +23,7 @@ import (
 	"embed"
 
 	"github.com/coder/websocket"
+	"golang.org/x/net/webdav"
 )
 
 //go:embed all:dist
@@ -49,6 +51,25 @@ func main() {
 		logf: log.Printf,
 	}.ServeHTTP)
 	mux.HandleFunc(twirpHandler.PathPrefix(), twirpHandler.ServeHTTP)
+	// mux.HandleFunc("/webdav", webdav.Handler{
+	// 	FileSystem: webdav.Dir("."),
+	// 	LockSystem: webdav.NewMemLS(),
+	// })
+
+	dirWebdav := "./data/webdav"
+	if err := os.MkdirAll(dirWebdav, os.ModePerm); err != nil {
+		log.Fatal().Err(err).Msg("failed to create webdav dir")
+	}
+
+	webdavHandler := &webdav.Handler{
+		FileSystem: webdav.Dir("./data/webdav"),
+		LockSystem: webdav.NewMemLS(),
+		Prefix:    "/webdav",
+	}
+	mux.HandleFunc("/webdav/", func(w http.ResponseWriter, r *http.Request) {
+		log.Debug().Str("method", r.Method).Str("path", r.URL.Path).Msg("webdav")
+		webdavHandler.ServeHTTP(w, r)
+	})
 
 	feFs, err := fs.Sub(staticFiles, "dist")
 	if err != nil {

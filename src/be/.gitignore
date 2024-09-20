@@ -7,3 +7,4 @@ agent
 !cmd/agent
 server
 !cmd/server
+data
