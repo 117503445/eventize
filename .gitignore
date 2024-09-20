@@ -20,3 +20,6 @@
 # Go workspace file
 go.work
 build_info.json
+
+src/be/ent/*
+!src/be/ent/schema
