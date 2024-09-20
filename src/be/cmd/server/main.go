@@ -31,6 +31,10 @@ func main() {
 	goutils.InitZeroLog()
 	log.Debug().Interface("buildInfo", common.GetBuildInfo()).Msg("Eventize server")
 
+	dbManager := server.NewDBManager()
+	dbManager.CreateNewDB()
+	dbManager.CreateOrMigrationSchema()
+
 	rpcServer := &server.Server{} // implements Haberdasher interface
 	twirpHandler := rpc.NewEventizeServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
 

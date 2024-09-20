@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.14.1
 	github.com/117503445/goutils v0.0.0-20240916184856-c7a771d51836
 	github.com/coder/websocket v1.8.12
+	github.com/lib/pq v1.10.9
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
 	github.com/twitchtv/twirp v8.1.3+incompatible
