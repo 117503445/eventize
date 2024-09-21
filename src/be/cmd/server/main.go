@@ -1,7 +1,10 @@
 package main
 
 import (
-	// "net"
+	"context"
+	"embed"
+	"fmt"
+	"io"
 	"io/fs"
 	"net/http"
 	"os"
@@ -11,26 +14,20 @@ import (
 	"github.com/117503445/eventize/src/be/internal/rpc"
 	"github.com/117503445/eventize/src/be/internal/server"
 	"github.com/117503445/goutils"
+	"github.com/coder/websocket"
 	"github.com/rs/zerolog/log"
 	"github.com/twitchtv/twirp"
-
-	"context"
-	"fmt"
-	"io"
-
-	"golang.org/x/time/rate"
-
-	"embed"
-
-	"github.com/coder/websocket"
 	"golang.org/x/net/webdav"
+	"golang.org/x/time/rate"
 )
 
 //go:embed all:dist
 var staticFiles embed.FS
 
 func main() {
-	goutils.InitZeroLog()
+	goutils.InitZeroLog(goutils.WithProduction{
+		DirLog: "./data/logs",
+	})
 	log.Debug().Interface("buildInfo", common.GetBuildInfo()).Msg("Eventize server")
 
 	rpcServer := server.NewServer()
@@ -51,10 +48,6 @@ func main() {
 		logf: log.Printf,
 	}.ServeHTTP)
 	mux.HandleFunc(twirpHandler.PathPrefix(), twirpHandler.ServeHTTP)
-	// mux.HandleFunc("/webdav", webdav.Handler{
-	// 	FileSystem: webdav.Dir("."),
-	// 	LockSystem: webdav.NewMemLS(),
-	// })
 
 	dirWebdav := "./data/webdav"
 	if err := os.MkdirAll(dirWebdav, os.ModePerm); err != nil {
@@ -64,7 +57,7 @@ func main() {
 	webdavHandler := &webdav.Handler{
 		FileSystem: webdav.Dir("./data/webdav"),
 		LockSystem: webdav.NewMemLS(),
-		Prefix:    "/webdav",
+		Prefix:     "/webdav",
 	}
 	mux.HandleFunc("/webdav/", func(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Str("method", r.Method).Str("path", r.URL.Path).Msg("webdav")
@@ -101,16 +94,6 @@ func main() {
 	if err := muxServer.ListenAndServe(); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve")
 	}
-	// l, err := net.Listen("tcp", ":9090")
-	// if err != nil {
-	// 	log.Fatal().Err(err).Msg("failed to listen")
-	// }
-
-	// err = s.Serve(l)
-	// if err != nil {
-	// 	log.Fatal().Err(err).Msg("failed to serve")
-	// }
-
 }
 
 // echoServer is the WebSocket echo server implementation.
