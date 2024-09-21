@@ -7,7 +7,10 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/117503445/eventize/src/be/internal/common"
@@ -23,6 +26,11 @@ import (
 
 //go:embed all:dist
 var staticFiles embed.FS
+
+type fakeWriter struct {
+}
+
+
 
 func main() {
 	goutils.InitZeroLog(goutils.WithProduction{
@@ -44,6 +52,43 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+
+	mux.HandleFunc("/proxy", func(w http.ResponseWriter, r *http.Request) {
+		// 创建目标 URL
+		target, err := url.Parse("http://builder:8443")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// 创建反向代理
+		proxy := httputil.NewSingleHostReverseProxy(target)
+
+		// 修改请求头，如果需要的话
+		r.URL.Scheme = target.Scheme
+		host := target.Host
+		r.URL.Host = host
+		r.URL.Path = strings.TrimSuffix(r.URL.Path, "proxy")
+
+		log.Debug().Str("Host", host).Str("URL", r.URL.String()).Str("Path", r.URL.Path).
+			Msg("proxy")
+
+
+
+
+
+		// 执行代理请求
+		proxy.ServeHTTP(w, r)
+
+		locate := w.Header().Get("Location")
+		if locate != "" {
+			w.Header().Set("Location", strings.Replace(locate, "./", "./proxy", 1))
+		}
+		w.WriteHeader()
+
+		log.Debug().Str("Location", w.Header().Get("Location")).Msg("proxy")
+	})
+
 	mux.HandleFunc("/ws", echoServer{
 		logf: log.Printf,
 	}.ServeHTTP)
