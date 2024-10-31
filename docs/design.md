@@ -44,13 +44,14 @@ task 某个 event 触发某个 machine 的 action
 - 便捷易用的 bucket，基于文件系统
 
 
-
 ## 可参考技术
 
 https://github.com/gofiber/fiber
 https://github.com/graph-gophers/graphql-go
 
 https://github.com/air-verse/air 实时编译
+
+https://github.com/goreleaser/goreleaser 打包为各种平台的二进制文件
 
 ## 任务示例
 
@@ -81,7 +82,7 @@ HTTPS 证书管理
 
 https://github.com/distribworks/dkron
 
-
+非常靠谱的分布式任务管理系统
 
 https://github.com/i4de/go-ops
 

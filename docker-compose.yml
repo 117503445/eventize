@@ -1,39 +1,43 @@
 services:
   eventize-dev:
     build:
-      context: ./src/be
+      context: ./
       dockerfile: Dockerfile.dev
     volumes:
-      - './src/be:/workspace'
+      - './:/workspace'
+      - './scripts/entrypoint.sh:/entrypoint'
       - eventize-dev-vsc:/root/.vscode-server
     stdin_open: true
     tty: true
-  fe-dev:
-    build:
-      context: ./src/fe
-      dockerfile: Dockerfile.dev
-    volumes:
-      - './src/fe:/workspace'
-      - fe-dev-vsc:/root/.vscode-server
-    stdin_open: true
-    tty: true
-  postgres:
-    image: postgres
-    # set shared memory limit when using docker-compose
-    shm_size: 128mb
-    environment:
-      POSTGRES_PASSWORD: 12345678
-  builder:
-    build:
-      context: ./src/builder
-      dockerfile: Dockerfile
-    volumes:
-      - ./src/builder/data/config:/config
-      - ./src/be/data/actions:/workspace
+    env_file:
+      - .env
     ports:
-      - 8443:8443
-    restart: unless-stopped
+      - 3284:8080
+  # fe-dev:
+  #   build:
+  #     context: ./src/fe
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - './src/fe:/workspace'
+  #     - fe-dev-vsc:/root/.vscode-server
+  #   stdin_open: true
+  #   tty: true
+  # postgres:
+  #   image: postgres
+  #   # set shared memory limit when using docker-compose
+  #   shm_size: 128mb
+  #   environment:
+  #     POSTGRES_PASSWORD: 12345678
+  # builder:
+  #   build:
+  #     context: ./src/builder
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./src/builder/data/config:/config
+  #     - ./src/be/data/actions:/workspace
+  #   ports:
+  #     - 8443:8443
+  #   restart: unless-stopped
 
 volumes:
   eventize-dev-vsc:
-  fe-dev-vsc:

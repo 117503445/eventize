@@ -25,3 +25,4 @@ src/be/ent/*
 !src/be/ent/schema
 
 *.pb.ts
+.env
