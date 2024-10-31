@@ -17,14 +17,12 @@ services:
       - fe-dev-vsc:/root/.vscode-server
     stdin_open: true
     tty: true
-
   postgres:
     image: postgres
     # set shared memory limit when using docker-compose
     shm_size: 128mb
     environment:
       POSTGRES_PASSWORD: 12345678
-
   builder:
     build:
       context: ./src/builder
