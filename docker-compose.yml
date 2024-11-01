@@ -3,6 +3,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.dev
+    privileged: true
     volumes:
       - './:/workspace'
       - './scripts/entrypoint.sh:/entrypoint'

@@ -1,19 +1,19 @@
 services:
   eventize-dev:
     build:
-      context: ./src/be
+      context: ../src/be
       dockerfile: Dockerfile.dev
     volumes:
-      - './src/be:/workspace'
+      - '../src/be:/workspace'
       - eventize-dev-vsc:/root/.vscode-server
     stdin_open: true
     tty: true
   fe-dev:
     build:
-      context: ./src/fe
+      context: ../src/fe
       dockerfile: Dockerfile.dev
     volumes:
-      - './src/fe:/workspace'
+      - '../src/fe:/workspace'
       - fe-dev-vsc:/root/.vscode-server
     stdin_open: true
     tty: true
