@@ -31,7 +31,8 @@ services:
       - ../:/workspace
     restart: unless-stopped
     working_dir: /workspace/src/d
-    entrypoint: reflex -r '(\.go$|go\.mod)' -s 'go build -o /workspace/d .'
+    entrypoint: ./watch.sh
+    init: true
 
   # builder:
   #   build:

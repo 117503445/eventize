@@ -85,5 +85,4 @@ func main() {
 
 	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/server")
 	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/agent")
-
 }
