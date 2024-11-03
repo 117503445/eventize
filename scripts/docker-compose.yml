@@ -23,6 +23,16 @@ services:
     shm_size: 128mb
     environment:
       POSTGRES_PASSWORD: 12345678
+  dev-builder:
+    build:
+      context: ../src/d
+      dockerfile: Dockerfile.builder
+    volumes:
+      - ../:/workspace
+    restart: unless-stopped
+    working_dir: /workspace/src/d
+    entrypoint: reflex -r '(\.go$|go\.mod)' -s 'go build -o /workspace/d .'
+
   # builder:
   #   build:
   #     context: ./src/builder

@@ -26,3 +26,6 @@ src/be/ent/*
 
 *.pb.ts
 .env
+
+d
+!src/d
