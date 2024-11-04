@@ -1,0 +1,149 @@
+{
+  "debug.terminal.clearBeforeReusing": true,
+  "editor.copyWithSyntaxHighlighting": false,
+  "editor.fontFamily": "UbuntuMono Nerd Font Mono, UbuntuMono NF, Microsoft YaHei Mono",
+  // "editor.minimap.enabled": false,
+  "editor.unicodeHighlight.allowedCharacters": {
+    "！": true,
+    "：": true,
+    "，": true
+  },
+  "editor.wordWrap": "on",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/！（）｛｝【】、；：’”，。《》？",
+  "files.autoGuessEncoding": false,
+  "files.autoSave": "afterDelay",
+  "files.exclude": {
+    "**/.git": false,
+    "**/.hg": false,
+    "**/.svn": false,
+    "**/CVS": false
+  },
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.ignoreMissingGitWarning": true,
+  "go.testFlags": [
+    "-v",
+    "-count=1"
+  ],
+  "go.toolsManagement.autoUpdate": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "markdown.preview.fontFamily": "UbuntuMono Nerd Font Mono,UbuntuMono NF,Microsoft YaHei Mono",
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "python.languageServer": "Pylance",
+  "redhat.telemetry.enabled": false,
+  "terminal.integrated.copyOnSelection": true,
+  // "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.fontFamily": "UbuntuMono Nerd Font Mono,UbuntuMono NF,Microsoft YaHei Mono",
+  "terminal.integrated.fontWeightBold": "normal",
+  // "terminal.integrated.profiles.linux": {
+  //   "zsh": {
+  //     "path": "/usr/bin/zsh"
+  //   }
+  // },
+  "terminal.integrated.profiles.windows": {
+    "pwsh": {
+      "args": [
+        "-nologo"
+      ],
+      "path": "pwsh"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "pwsh",
+  "terminal.integrated.tabs.enabled": true,
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.unicodeHighlight.nonBasicASCII": false,
+  "remote.SSH.useLocalServer": false,
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "extensions.ignoreRecommendations": true,
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "git.alwaysSignOff": true,
+  "window.title": "${rootName}${separator}${activeEditorShort}",
+  "rust-analyzer.inlayHints.typeHints.enable": false,
+  "search.maxResults": 200000,
+  "git.mergeEditor": true,
+  "[python]": {
+    "editor.formatOnType": true,
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.accessibilitySupport": "off",
+  "go.inlayHints.rangeVariableTypes": true,
+  "go.inlayHints.constantValues": true,
+  "go.inlayHints.functionTypeParameters": true,
+  "go.inlayHints.parameterNames": true,
+  "go.inlayHints.compositeLiteralTypes": true,
+  "go.inlayHints.compositeLiteralFields": true,
+  "go.inlayHints.assignVariableTypes": true,
+  "go.diagnostic.vulncheck": "Imports",
+  "go.editorContextMenuCommands": {
+    "removeTags": true,
+    "fillStruct": true,
+    "testFile": true,
+    "testPackage": true,
+    "generateTestForFile": true,
+    "generateTestForPackage": true,
+    "benchmarkAtCursor": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "git.defaultBranchName": "master",
+  "git.openRepositoryInParentFolders": "always",
+  "logFileHighlighter.customPatterns": [
+    {
+      "pattern": "NOTI",
+      "foreground": "#D19275"
+    },
+    {
+      "pattern": "DEBU",
+      "foreground": "#3CB371"
+    },
+    {
+      "pattern": "ERRO",
+      "foreground": "#FF0000"
+    }
+  ],
+  "svg.preview.mode": "svg",
+  "playwright.showTrace": true,
+  "inlineChat.showDiff": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "remote.localPortHost": "allInterfaces",
+  "cmake.options.statusBarVisibility": "visible",
+  "remote.autoForwardPortsSource": "hybrid",
+  "workbench.editorLargeFileConfirmation": 512,
+  "cmake.buildDirectory": "${workspaceFolder}/vscode-cmake-build",
+  "cmake.showOptionsMovedNotification": false,
+  "markdown.copyFiles.destination": {
+    "*": "./${documentBaseName}.assets/"
+  },
+  "yaml.maxItemsComputed": 999999,
+  "explorer.confirmPasteNative": false,
+  "typst-lsp.exportPdf": "never",
+  "github.copilot.advanced": {},
+  "github.copilot.enable": {
+    "plaintext": true,
+    "markdown": true,
+    "scminput": false
+  },
+  "workbench.colorTheme": "Default Light Modern",
+  "terminal.integrated.defaultProfile.osx": "fish",
+  "terminal.integrated.profiles.osx": {
+    "fish": {
+      "path": "fish"
+    }
+  },
+  "window.autoDetectColorScheme": true,
+  "Lingma.localMachineModel": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "devbox.enableDebugMode": true,
+  "workbench.startupEditor": "none",
+}
