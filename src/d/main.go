@@ -17,15 +17,16 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to get git root dir")
 	}
-	dDir := rootDir + "/src/d"   // dev cli dir
+	// dDir := rootDir + "/src/d"   // dev cli dir
 	sDir := rootDir + "/scripts" // scripts dir
 
 	goutils.ExecOpt.Cwd = rootDir
 
-	goutils.Exec("docker build -t 117503445/eventize-dev .", goutils.WithCwd(dDir))
+	// goutils.Exec("docker build -t 117503445/eventize-dev .", goutils.WithCwd(dDir))
 
 	// docker run -it --rm -v $PWD:/workspace --entrypoint fish 117503445/eventize-dev
-	goutils.Exec(fmt.Sprintf("docker run --rm -v %v:/workspace --entrypoint /workspace/src/d/build_proto.sh 117503445/eventize-dev", rootDir))
+	// goutils.Exec(fmt.Sprintf("docker run --rm -v %v:/workspace --entrypoint /workspace/src/d/build_proto.sh 117503445/eventize-dev", rootDir))
+	goutils.Exec("docker compose exec --no-TTY --workdir /workspace dev-builder /workspace/src/d/build_proto.sh", goutils.WithCwd(sDir))
 
 	goutils.Exec("cp src/common/service.pb.ts src/fe/src/rpc/service.pb.ts", goutils.WithCwd(rootDir))
 
@@ -51,14 +52,14 @@ func main() {
 		log.Warn().Str("tags", tagOutput).Msg("more than one tag")
 	}
 	tag := tags[0]
-	log.Debug().Str("tag", tag).Msg("tag")
+	// log.Debug().Str("tag", tag).Msg("tag")
 	// 是否有未提交的修改
 	dirty := false
 	r, _ = goutils.Exec("git status --porcelain")
 	if r.Stdout != "" {
 		dirty = true
 	}
-	log.Debug().Bool("dirty", dirty).Msg("dirty")
+	// log.Debug().Bool("dirty", dirty).Msg("dirty")
 
 	version := ""
 	if tag != "" {
@@ -71,7 +72,7 @@ func main() {
 		version = version + "-dirty"
 	}
 
-	log.Debug().Str("version", version).Msg("version")
+	// log.Debug().Str("version", version).Msg("version")
 
 	buildInfo := map[string]interface{}{
 		"commit":  commit,
@@ -80,6 +81,8 @@ func main() {
 		"version": version,
 		"date":    time.Now().Format("2006-01-02 15:04:05"),
 	}
+
+	log.Debug().Interface("buildInfo", buildInfo).Msg("buildInfo")
 
 	if err = goutils.WriteJSON(rootDir+"/src/be/internal/common/build_info.json", buildInfo); err != nil {
 		log.Fatal().Err(err).Msg("failed to write build_info.json")
