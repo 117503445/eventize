@@ -10,15 +10,16 @@ import (
 	"os"
 	"time"
 
-	"github.com/117503445/eventize/src/be/internal/common"
-	"github.com/117503445/eventize/src/be/internal/rpc"
-	"github.com/117503445/eventize/src/be/internal/server"
 	"github.com/117503445/goutils"
 	"github.com/coder/websocket"
 	"github.com/rs/zerolog/log"
 	"github.com/twitchtv/twirp"
 	"golang.org/x/net/webdav"
 	"golang.org/x/time/rate"
+
+	"github.com/117503445/eventize/src/be/internal/common"
+	"github.com/117503445/eventize/src/be/internal/rpc"
+	"github.com/117503445/eventize/src/be/internal/server"
 )
 
 //go:embed all:dist
