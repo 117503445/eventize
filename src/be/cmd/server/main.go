@@ -3,19 +3,16 @@ package main
 import (
 	"context"
 	"embed"
-	"fmt"
-	"io"
 	"io/fs"
+	"net"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/117503445/goutils"
 	"github.com/coder/websocket"
 	"github.com/rs/zerolog/log"
 	"github.com/twitchtv/twirp"
 	"golang.org/x/net/webdav"
-	"golang.org/x/time/rate"
 
 	"github.com/117503445/eventize/src/be/internal/common"
 	"github.com/117503445/eventize/src/be/internal/rpc"
@@ -45,9 +42,7 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/ws", echoServer{
-		logf: log.Printf,
-	}.ServeHTTP)
+	mux.HandleFunc("/ws", wsHandler)
 	mux.HandleFunc(twirpHandler.PathPrefix(), twirpHandler.ServeHTTP)
 
 	dirWebdav := "./data/webdav"
@@ -97,78 +92,71 @@ func main() {
 	}
 }
 
-// echoServer is the WebSocket echo server implementation.
-// It ensures the client speaks the echo subprotocol and
-// only allows one message every 100ms with a 10 message burst.
-type echoServer struct {
-	// logf controls where logs are sent.
-	logf func(f string, v ...interface{})
-}
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.Header.Get("X-Id")
+	log.Debug().Str("id", id).Str("RemoteAddr", r.RemoteAddr).
+		Msg("received connection")
 
-func (s echoServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		// Subprotocols: []string{"echo"},
 		InsecureSkipVerify: true,
 	})
 	if err != nil {
-		s.logf("%v", err)
+		log.Error().Err(err).Msg("failed to accept")
 		return
 	}
-	defer c.CloseNow()
+	log.Info().Str("Subprotocol", c.Subprotocol()).Msg("ws connected")
 
-	// if c.Subprotocol() != "echo" {
-	// 	c.Close(websocket.StatusPolicyViolation, "client must speak the echo subprotocol")
-	// 	return
-	// }
-
-	log.Debug().Msg("accepted connection")
-
-	l := rate.NewLimiter(rate.Every(time.Millisecond*100), 10)
-	for {
-		err = echo(c, l)
-		if websocket.CloseStatus(err) == websocket.StatusNormalClosure {
-			return
-		}
+	go func() {
+		listener, err := net.Listen("tcp", ":8081")
 		if err != nil {
-			log.Error().Err(err).Str("remote", r.RemoteAddr).Msg("failed to echo")
-			return
+			log.Fatal().Err(err).Msg("Error creating listener")
 		}
-	}
+		defer listener.Close()
+		log.Info().Msg("HTTP Proxy Listening on :8081")
+		for {
+			clientConn, err := listener.Accept()
+			if err != nil {
+				log.Error().Err(err).Msg("Error accepting connection")
+				continue
+			}
+			err = HandleHttpProxyRequest(clientConn, c)
+			if err != nil {
+				break
+			}
+		}
+		log.Info().Err(err).Msg("Closing HTTP Proxy connection")
+	}()
 }
 
-// echo reads from the WebSocket connection and then writes
-// the received message back to it.
-// The entire function has 10s to complete.
-func echo(c *websocket.Conn, l *rate.Limiter) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
+func HandleHttpProxyRequest(clientConn net.Conn, c *websocket.Conn) error {
+	defer clientConn.Close()
 
-	err := l.Wait(ctx)
+	log.Debug().Discard().Msg("Accepted HTTP Proxy connection")
+
+	req, err := common.ReadHttpFromTcp(clientConn)
 	if err != nil {
+		log.Error().Err(err).Msg("Error reading Client Request")
+		return nil
+	}
+
+	err = c.Write(context.Background(), websocket.MessageBinary, req)
+	if err != nil {
+		log.Error().Err(err).Msg("Error writing to WebSocket Connection")
 		return err
 	}
 
-	log.Debug().Msg("reading message")
-
-	typ, r, err := c.Reader(ctx)
+	_, resp, err := c.Read(context.Background())
 	if err != nil {
+		log.Error().Err(err).Msg("Error reading from WebSocket Connection")
 		return err
 	}
 
-	log.Debug().Msg("writing message")
-
-	w, err := c.Writer(ctx, typ)
+	_, err = clientConn.Write(resp)
 	if err != nil {
-		return err
+		log.Error().Err(err).Msg("Error writing to Client Connection")
+		return nil
 	}
 
-	log.Debug().Msg("copying message")
-
-	_, err = io.Copy(w, r)
-	if err != nil {
-		return fmt.Errorf("failed to io.Copy: %w", err)
-	}
-
-	err = w.Close()
-	return err
+	log.Debug().Discard().Msg("Closed HTTP Proxy connection")
+	return nil
 }

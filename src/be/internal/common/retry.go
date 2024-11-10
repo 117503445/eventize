@@ -25,7 +25,7 @@ type Retry struct {
 func NewRetry() *Retry {
 	return &Retry{
 		config: RetryConfig{
-			MaxRetries: 3,               // default MaxRetries
+			MaxRetries: 5,               // default MaxRetries
 			SleepTime:  1 * time.Second, // default SleepTime
 		},
 	}
