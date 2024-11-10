@@ -31,7 +31,8 @@ services:
       - ../:/workspace
     restart: unless-stopped
     working_dir: /workspace/src/d
-    entrypoint: ./watch.sh
+    # entrypoint: ./watch.sh
+    entrypoint: tail -f /dev/null
     init: true
 
   # builder:

@@ -21,6 +21,7 @@ func main() {
 	sDir := rootDir + "/scripts" // scripts dir
 
 	goutils.ExecOpt.Cwd = rootDir
+	goutils.Exec("docker compose up -d", goutils.WithCwd(sDir))
 
 	// goutils.Exec("docker build -t 117503445/eventize-dev .", goutils.WithCwd(dDir))
 

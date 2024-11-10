@@ -1,5 +1,5 @@
 FROM 117503445/dev-dind
 
-RUN pacman -Syu --noconfirm rsync
+RUN pacman -Syu --noconfirm rsync go-task
 
 # ENTRYPOINT [ "/workspace/scripts/entrypoint.sh" ]

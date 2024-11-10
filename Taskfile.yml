@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  dev:
+    cmds:
+      - cd ./src/d && CGO_ENABLED=0 go build -o ../../ .
+      - ./d
