@@ -109,7 +109,7 @@ func NewDBManager() *DBManager {
 	// Ping the database to check if the connection is working
 	err = common.NewRetry().Execute(func() error {
 		if err := db.Ping(); err != nil {
-			log.Error().Err(err).Msg("failed to ping database")
+			log.Warn().Err(err).Msg("failed to ping database")
 			return err
 		}
 		return nil

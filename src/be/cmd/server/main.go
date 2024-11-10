@@ -41,7 +41,7 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to read assets")
 	}
 	for _, r := range rr {
-		log.Debug().Str("name", r.Name()).Msg("static file")
+		log.Debug().Discard().Str("name", r.Name()).Msg("static file")
 	}
 
 	mux := http.NewServeMux()
