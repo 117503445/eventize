@@ -146,4 +146,8 @@
   "github.copilot.editor.enableAutoCompletions": true,
   "devbox.enableDebugMode": true,
   "workbench.startupEditor": "none",
+  "editor.minimap.enabled": false,
+  "task": {
+    "path": "go-task"
+  },
 }

@@ -89,6 +89,16 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to write build_info.json")
 	}
 
-	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/server", goutils.WithCwd(sDir))
-	goutils.Exec("docker compose exec --no-TTY eventize-dev go build ./cmd/agent", goutils.WithCwd(sDir))
+	goutils.Exec("docker compose exec --env CGO_ENABLED=0 --no-TTY eventize-dev go build ./cmd/server", goutils.WithCwd(sDir))
+	goutils.Exec("docker compose exec --env CGO_ENABLED=0 --no-TTY eventize-dev go build ./cmd/agent", goutils.WithCwd(sDir))
+
+	if err = goutils.MoveFile(rootDir+"/src/be/server", sDir+"/server"); err != nil {
+		log.Fatal().Err(err).Msg("failed to move server")
+	}
+	if err = goutils.MoveFile(rootDir+"/src/be/agent", sDir+"/agent"); err != nil {
+		log.Fatal().Err(err).Msg("failed to move agent")
+	}
+
+	goutils.Exec("docker compose down", goutils.WithCwd(sDir+"/envs/dev"))
+	goutils.Exec("docker compose up -d", goutils.WithCwd(sDir+"/envs/dev"))
 }

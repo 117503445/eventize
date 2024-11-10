@@ -27,7 +27,7 @@ var staticFiles embed.FS
 
 func main() {
 	goutils.InitZeroLog(goutils.WithProduction{
-		DirLog: "./data/logs",
+		FileName: "server",
 	})
 	log.Debug().Interface("buildInfo", common.GetBuildInfo()).Msg("Eventize server")
 

@@ -105,6 +105,20 @@ func NewDBManager() *DBManager {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed opening sql connection to postgres")
 	}
+
+	// Ping the database to check if the connection is working
+	err = common.NewRetry().Execute(func() error {
+		if err := db.Ping(); err != nil {
+			log.Error().Err(err).Msg("failed to ping database")
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		log.Fatal().Msg("failed to ping database")
+	}
+
 	return &DBManager{
 		client: client,
 		db:     db,

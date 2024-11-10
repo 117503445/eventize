@@ -1,10 +1,10 @@
 module github.com/117503445/eventize/src/be
 
-go 1.23.1
+go 1.23.2
 
 require (
 	entgo.io/ent v0.14.1
-	github.com/117503445/goutils v0.0.0-20240920173354-0227089efc60
+	github.com/117503445/goutils v0.0.0-20241110162822-a9e3056ef399
 	github.com/coder/websocket v1.8.12
 	github.com/lib/pq v1.10.9
 	github.com/rs/zerolog v1.33.0
@@ -32,7 +32,7 @@ require (
 	github.com/zclconf/go-cty v1.15.0 // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/tools v0.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect

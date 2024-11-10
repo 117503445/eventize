@@ -1,0 +1,26 @@
+services:
+  server:
+    build:
+      context: /workspace/scripts
+      dockerfile: Dockerfile.gobin
+    volumes:
+        - /workspace/scripts/server:/workspace/app
+        - ./logs:/workspace/logs
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: 12345678
+      
+  agent:
+    build:
+      context: /workspace/scripts
+      dockerfile: Dockerfile.gobin
+    volumes:
+        - /workspace/scripts/agent:/workspace/app
+        - ./logs:/workspace/logs
+    depends_on:
+      - server
