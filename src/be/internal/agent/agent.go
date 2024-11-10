@@ -12,7 +12,7 @@ type Server struct {
 	rpc.EventizeAgent
 }
 
-func (s *Server) GetBuildInfo(context.Context, *emptypb.Empty) (meta *rpc.BuildInfo, err error) {
+func (s *Server) GetAgentBuildInfo(context.Context, *emptypb.Empty) (meta *rpc.BuildInfo, err error) {
 	return &rpc.BuildInfo{
 		Version: common.GetBuildInfo().Version,
 	}, nil

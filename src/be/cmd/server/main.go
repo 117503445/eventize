@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/117503445/goutils"
 	"github.com/coder/websocket"
@@ -118,6 +119,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Info().Msg("HTTP Proxy Listening on :8081")
 
 		go func() {
+			time.Sleep(3 * time.Second)
 			var err error
 
 			proxyURL, err := url.Parse("http://localhost:8081")
@@ -132,6 +134,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			var buildInfo *rpc.BuildInfo
 			err = common.NewRetry().Execute(func() error {
+				log.Debug().Msg("Getting build info")
 				var err error
 				buildInfo, err = c.GetAgentBuildInfo(context.Background(), &emptypb.Empty{})
 				return err
