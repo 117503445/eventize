@@ -5,6 +5,8 @@ dist
 
 agent
 !cmd/agent
+!internal/agent
 server
 !cmd/server
+!internal/server
 data

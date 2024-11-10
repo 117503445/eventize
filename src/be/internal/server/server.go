@@ -23,6 +23,7 @@ import (
 
 // Server implements the Haberdasher service
 type Server struct {
+	rpc.EventizeServer
 	dbManager *DBManager
 }
 

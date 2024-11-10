@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/117503445/eventize/src/be/internal/agent"
 	"github.com/117503445/eventize/src/be/internal/common"
 	"github.com/117503445/eventize/src/be/internal/rpc"
 	"github.com/117503445/goutils"
@@ -24,6 +25,16 @@ func main() {
 	})
 	var err error
 	log.Debug().Msg("Hello, World!")
+
+	go func() {
+		rpcServer := &agent.Server{}
+		twirpHandler := rpc.NewEventizeAgentServer(rpcServer)
+		log.Info().Msg("Starting server")
+		err := http.ListenAndServe(":9090", twirpHandler)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to start server")
+		}
+	}()
 
 	client := rpc.NewEventizeServerProtobufClient("http://server:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
 
@@ -53,6 +64,8 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to create event")
 	}
 	log.Info().Msgf("Event created: %+v", resp)
+
+	select {}
 }
 
 // create TCP connection to server by HTTP request

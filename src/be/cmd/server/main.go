@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/117503445/goutils"
@@ -13,6 +14,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/twitchtv/twirp"
 	"golang.org/x/net/webdav"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/117503445/eventize/src/be/internal/common"
 	"github.com/117503445/eventize/src/be/internal/rpc"
@@ -26,6 +28,7 @@ func main() {
 	goutils.InitZeroLog(goutils.WithProduction{
 		FileName: "server",
 	})
+
 	log.Debug().Interface("buildInfo", common.GetBuildInfo()).Msg("Eventize server")
 
 	rpcServer := server.NewServer()
@@ -113,6 +116,32 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer listener.Close()
 		log.Info().Msg("HTTP Proxy Listening on :8081")
+
+		go func() {
+			var err error
+
+			proxyURL, err := url.Parse("http://localhost:8081")
+			if err != nil {
+				log.Fatal().Err(err).Msg("Error parsing proxy URL")
+			}
+
+			c := rpc.NewEventizeAgentProtobufClient("http://localhost:9090", &http.Client{
+				Transport: &http.Transport{
+					Proxy: http.ProxyURL(proxyURL),
+				},
+			})
+			var buildInfo *rpc.BuildInfo
+			err = common.NewRetry().Execute(func() error {
+				var err error
+				buildInfo, err = c.GetAgentBuildInfo(context.Background(), &emptypb.Empty{})
+				return err
+			})
+			if err != nil {
+				log.Fatal().Err(err).Msg("Error getting build info")
+			}
+			log.Info().Interface("buildInfo", buildInfo).Msg("Got build info")
+		}()
+
 		for {
 			clientConn, err := listener.Accept()
 			if err != nil {
