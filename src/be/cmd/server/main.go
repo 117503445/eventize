@@ -29,7 +29,7 @@ func main() {
 	log.Debug().Interface("buildInfo", common.GetBuildInfo()).Msg("Eventize server")
 
 	rpcServer := server.NewServer()
-	twirpHandler := rpc.NewEventizeServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
+	twirpHandler := rpc.NewEventizeServerServer(rpcServer, twirp.WithServerPathPrefix("/rpc"))
 
 	log.Debug().Str("prefix", twirpHandler.PathPrefix()).Msg("twirp handler path prefix")
 

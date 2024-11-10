@@ -25,7 +25,7 @@ func main() {
 	var err error
 	log.Debug().Msg("Hello, World!")
 
-	client := rpc.NewEventizeProtobufClient("http://server:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
+	client := rpc.NewEventizeServerProtobufClient("http://server:9090", &http.Client{}, twirp.WithClientPathPrefix("/rpc"))
 
 	var buildInfo *rpc.BuildInfo
 	err = common.NewRetry().Execute(func() error {
